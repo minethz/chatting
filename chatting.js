@@ -535,6 +535,10 @@ app.post("/api/updateReportStatus", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("Server is working!");
+});
+
 const PORT = process.env.PORT || 5020; // Use environment variable or default to 5020
 server.listen(PORT, (error) => {
   if (error) {
