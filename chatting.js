@@ -535,7 +535,11 @@ app.post("/api/updateReportStatus", async (req, res) => {
   }
 });
 
-const PORT = 5020;
-server.listen(PORT, () => {
-  console.log(`🚀 Chat server running on http://localhost:${PORT}`);
+const PORT = process.env.PORT || 5020; // Use environment variable or default to 5020
+server.listen(PORT, (error) => {
+  if (error) {
+    console.error("Error starting server:", error);
+  } else {
+    console.log(`🚀 Chat server running on http://localhost:${PORT}`);
+  }
 });

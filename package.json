@@ -1,7 +1,7 @@
 {
   "name": "platform-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "chatting.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node chatting.js"
@@ -30,7 +30,7 @@
     "socket.io-client": "^4.8.1",
     "stripe": "^18.4.0"
   },
-  "description": "",
+  "description": "Chatting platform API for handling messages, file uploads, and user interactions.",
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
