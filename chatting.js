@@ -16,7 +16,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.use(express.json());
 
 // Update CORS configuration
-const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
+const allowedOrigins = ["https://nodeserver-production-982a.up.railway.app", "http://localhost:3000", "http://localhost:5173"];
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -250,7 +250,7 @@ app.post("/api/uploadFiles", upload.array("files"), async (req, res) => {
         email,
         fileUrl: s3Result.Location,
         timestamp: new Date(),
-        role: "seller",
+        role: "seller", // Ensure role is set to seller
       });
     }
 
@@ -535,15 +535,7 @@ app.post("/api/updateReportStatus", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("Server is working!");
-});
-
-const PORT = process.env.PORT || 5020; // Use environment variable or default to 5020
-server.listen(PORT, (error) => {
-  if (error) {
-    console.error("Error starting server:", error);
-  } else {
-    console.log(`🚀 Chat server running on http://localhost:${PORT}`);
-  }
+const PORT = 5020;
+server.listen(PORT, () => {
+  console.log(`🚀 Chat server running on http://localhost:${PORT}`);
 });
