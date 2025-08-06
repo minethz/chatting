@@ -16,7 +16,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.use(express.json());
 
 // Update CORS configuration
-const allowedOrigins = ["https://nodeserver-production-982a.up.railway.app"];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -535,58 +535,15 @@ app.post("/api/updateReportStatus", async (req, res) => {
   }
 });
 
-// Fix: Fetch category and price correctly
-app.get("/api/getCategoryAndPrice/:requestId", async (req, res) => {
-  const { requestId } = req.params;
-
-  try {
-    const result = await pool.query(
-      `SELECT category, price, currency 
-       FROM middleman_services 
-       WHERE id = $1`,
-      [requestId]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: "Category and price not found." });
-    }
-
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    console.error("Error fetching category and price:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
-  }
+app.get("/", (req, res) => {
+  res.send("Server is working!");
 });
 
-// Fix: Update payment status correctly
-app.post("/api/updatePaymentStatus", async (req, res) => {
-  const { requestId, isPaid } = req.body;
-
-  if (typeof isPaid !== "boolean" || !requestId) {
-    return res.status(400).json({ message: "Invalid request data." });
+const PORT = process.env.PORT || 5020; // Use environment variable or default to 5020
+server.listen(PORT, (error) => {
+  if (error) {
+    console.error("Error starting server:", error);
+  } else {
+    console.log(`🚀 Chat server running on http://localhost:${PORT}`);
   }
-
-  try {
-    const result = await pool.query(
-      `UPDATE middleman_services 
-       SET is_paid = $1 
-       WHERE id = $2 
-       RETURNING id, is_paid`,
-      [isPaid, requestId]
-    );
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: "Request not found." });
-    }
-
-    res.status(200).json({ message: "Payment status updated successfully.", data: result.rows[0] });
-  } catch (error) {
-    console.error("Error updating payment status:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
-  }
-});
-
-const PORT = 5020;
-server.listen(PORT, () => {
-  console.log(`🚀 Chat server running on http://localhost:${PORT}`);
 });
