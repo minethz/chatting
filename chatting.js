@@ -535,6 +535,27 @@ app.post("/api/updateReportStatus", async (req, res) => {
   }
 });
 
+// New endpoint to fetch category and price for a request
+app.get("/api/getCategoryAndPrice/:requestId", async (req, res) => {
+  const { requestId } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT category, price, currency FROM middleman_services WHERE id = $1`,
+      [requestId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Request not found." });
+    }
+
+    res.status(200).json(result.rows[0]); // Ensure correct data is returned
+  } catch (error) {
+    console.error("Error fetching category and price:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
 const PORT = 5020;
 server.listen(PORT, () => {
   console.log(`🚀 Chat server running on http://localhost:${PORT}`);
