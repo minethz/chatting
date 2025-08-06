@@ -8,6 +8,9 @@ const multer = require("multer");
 const AWS = require("aws-sdk");
 const { sendMiddlemanEmail } = require("./sendEmail"); // Import email utility
 
+// Shared database connection
+const pool = require("./shared/db"); // Import shared DB connection
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -16,7 +19,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.use(express.json());
 
 // Update CORS configuration
-const allowedOrigins = ["https://nodeserver-production-982a.up.railway.app", "http://localhost:3000", "http://localhost:5173"];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -26,18 +29,6 @@ app.use(cors({
     }
   },
 }));
-
-// PostgreSQL database connection
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  port: process.env.DB_PORT,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
 
 // AWS S3 configuration
 AWS.config.update({
